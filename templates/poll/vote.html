@@ -1,8 +1,18 @@
-<h1>{{ question.question_text}}</h1>
+{% extends "base.html" %}
 
-<u>
-    <h2>Elige bien</h2>
+{% block title %}Vota{% endblock %}
+
+{% block content %}
+  <h1>{{ question.question_text }}</h1>
+  
+  <form method="post">
+    <!-- Para proteger los datos y además de que no servirá el formulario -->
+    {% csrf_token %}
     {% for c in question.choise_set.all %}
-    <li>{{ c.choise_text}}</li>
+    <input type="radio" name="choice" id="c_{{ c.id }}" value="{{ c.id }}">
+    <label for="{{ c.id }}">{{ c.choise_text }}</label>
     {% endfor %}
-</u>
+    <input type="submit" value="Votar">
+  </form>
+
+{% endblock %}
