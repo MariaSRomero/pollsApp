@@ -5,6 +5,9 @@
 {% endblock %}
 
 {% block content %}
+
+<a href="{% url 'poll:home' %}">Encuestas</a>
+
   <h1>{{ question.question_text }}</h1>
 
   <ul>
@@ -12,4 +15,50 @@
       <li>{{ c.choise_text }} - {{ c.votes }} voto{{ c.votes | pluralize }}</li>
     {% endfor %}
   </ul>
-{% endblock %}
+
+  <div class="canva" style="width: 400px; margin:0 auto;">
+    <canvas id="myPieChart" width="400px" height="400px"></canvas>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script>
+    const ctx = document.getElementById('myPieChart').getContext('2d');
+    const choiceText = '{{ choice_text|escapejs }}';
+    const votes = '{{ votes|escapejs }}'; 
+
+    const chartData = {
+        labels: JSON.parse(choiceText),
+        datasets: [{
+            label: 'Números de votos',
+            data: JSON.parse(votes),
+            backgroundColor: [
+              'rgba(255, 99, 132, 0.2)',
+              'rgba(54, 162, 235, 0.2)',
+              'rgba(255, 206, 86, 0.2)',
+              'rgba(75, 192, 192, 0.2)',
+              'rgba(153, 102, 255, 0.2)',
+              'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: 'rgba(75, 192, 192, 1)',
+            borderWidth: 1
+        }]
+    };
+
+    const myBarChart = new Chart(ctx, {
+        type: 'bar',
+        data: chartData,
+        options: {
+            responsive: true,
+            plugins: {
+                legend: {
+                    position: 'top',
+                },
+                title: {
+                    display: true,
+                    text: 'Bar Chart of Votes'
+                }
+            }
+        }
+    });
+</script>
+  {% endblock %}
